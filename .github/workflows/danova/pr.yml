@@ -28,6 +28,10 @@ jobs:
         working-directory: web/danova
         run: npx tsc --noEmit
 
+      - name: Test
+        working-directory: web/danova
+        run: npm run test
+
       - name: Build
         working-directory: web/danova
         run: npm run build

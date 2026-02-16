@@ -12,7 +12,7 @@ dev-install:
 
 # --- Test: testing ---
 
-test: test-lint test-typecheck
+test: test-lint test-typecheck test-unit
 	@echo "All tests passed"
 
 test-lint:
@@ -20,6 +20,9 @@ test-lint:
 
 test-typecheck:
 	cd $(WEB_DIR) && npx tsc --noEmit
+
+test-unit:
+	cd $(WEB_DIR) && npm run test
 
 # --- Prod: deployment/build ---
 
