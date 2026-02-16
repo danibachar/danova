@@ -27,7 +27,6 @@ Open [http://localhost:3000](http://localhost:3000).
 
 - Hero and service images: `public/images/`
 - Blog images: `public/images/blog/`
-- **Git LFS**: All images are tracked with [Git LFS](https://git-lfs.com/). After cloning, run `git lfs pull` to fetch image files.
 - **Nano Banana API**: For AI-generated images, set `NANO_BANANA_API_KEY` or `GOOGLE_AI_API_KEY` in `.env.local`. See `lib/image-generation.ts`.
 
 ## Build

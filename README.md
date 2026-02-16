@@ -2,28 +2,6 @@
 
 Marketing website for Danova Renovations - premium paint, flooring, and renovation services in Fort Lauderdale and Miami, Florida.
 
-## Git LFS (Images)
-
-Images (JPG, PNG, GIF, WebP, SVG) are stored with [Git LFS](https://git-lfs.com/) to keep the repo lean.
-
-**First-time setup:**
-```bash
-brew install git-lfs
-git lfs install
-```
-
-**Clone with LFS files:**
-```bash
-git clone <repo-url>
-git lfs pull
-```
-
-**Migrate existing images to LFS** (run once to convert images already in the repo):
-```bash
-./scripts/migrate-to-lfs.sh
-# Or with history rewrite: ./scripts/migrate-to-lfs.sh --rewrite-history
-```
-
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
