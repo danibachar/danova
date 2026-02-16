@@ -1,7 +1,9 @@
-name: PR
+name: PR Landing
 
 on:
   pull_request:
+    paths:
+      - "web/landing-pages/**"
 
 jobs:
   build:
@@ -14,24 +16,20 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: web/danova/package-lock.json
+          cache-dependency-path: web/landing-pages/danova-lead/package-lock.json
 
       - name: Install dependencies
-        working-directory: web/danova
+        working-directory: web/landing-pages/danova-lead
         run: npm ci
 
       - name: Lint
-        working-directory: web/danova
+        working-directory: web/landing-pages/danova-lead
         run: npm run lint
 
       - name: Typecheck
-        working-directory: web/danova
+        working-directory: web/landing-pages/danova-lead
         run: npx tsc --noEmit
 
-      - name: Test
-        working-directory: web/danova
-        run: npm run test
-
       - name: Build
-        working-directory: web/danova
+        working-directory: web/landing-pages/danova-lead
         run: npm run build

@@ -1,41 +1,77 @@
-.PHONY: dev dev-install test test-lint test-typecheck prod prod-build prod-start clean
+.PHONY: dev dev-install test prod prod-build prod-start clean
+.PHONY: dev-landing dev-install-landing test-landing prod-landing prod-build-landing deploy-landing clean-landing
+.PHONY: dev-danova dev-install-danova test-danova prod-danova prod-build-danova deploy-danova clean-danova
 
-WEB_DIR := web/danova
+WEB_DANOVA := web/danova
+WEB_LANDING := web/landing-pages/danova-lead
 
-# --- Dev: local development ---
+# --- Danova (main site): web/danova ---
 
-dev:
-	cd $(WEB_DIR) && npm run dev
+dev: dev-danova
+dev-danova:
+	cd $(WEB_DANOVA) && npm run dev
 
-dev-install:
-	cd $(WEB_DIR) && npm install
+dev-install: dev-install-danova
+dev-install-danova:
+	cd $(WEB_DANOVA) && npm install
 
-# --- Test: testing ---
+test: test-danova
+test-danova: test-lint-danova test-typecheck-danova test-unit-danova
+	@echo "Danova tests passed"
 
-test: test-lint test-typecheck test-unit
-	@echo "All tests passed"
+test-lint-danova:
+	cd $(WEB_DANOVA) && npm run lint
 
-test-lint:
-	cd $(WEB_DIR) && npm run lint
+test-typecheck-danova:
+	cd $(WEB_DANOVA) && npx tsc --noEmit
 
-test-typecheck:
-	cd $(WEB_DIR) && npx tsc --noEmit
+test-unit-danova:
+	cd $(WEB_DANOVA) && npm run test
 
-test-unit:
-	cd $(WEB_DIR) && npm run test
+prod: prod-danova
+prod-danova: prod-build-danova
 
-# --- Prod: deployment/build ---
+prod-build: prod-build-danova
+prod-build-danova:
+	cd $(WEB_DANOVA) && npm run build
 
-prod: prod-build
+prod-start: prod-start-danova
+prod-start-danova:
+	cd $(WEB_DANOVA) && npm run start
 
-prod-build:
-	cd $(WEB_DIR) && npm run build
+deploy-danova: prod-build-danova
+	cd $(WEB_DANOVA) && npx wrangler pages deploy out --project-name=danova-web
 
-prod-start:
-	cd $(WEB_DIR) && npm run start
+clean: clean-danova
+clean-danova:
+	rm -rf $(WEB_DANOVA)/.next
+	@echo "Cleaned danova .next"
 
-# --- Clean ---
+# --- Landing page: web/landing-pages/danova-lead ---
 
-clean:
-	rm -rf $(WEB_DIR)/.next
-	@echo "Cleaned .next directory"
+dev-landing:
+	cd $(WEB_LANDING) && npm run dev
+
+dev-install-landing:
+	cd $(WEB_LANDING) && npm install
+
+test-landing: test-lint-landing test-typecheck-landing
+	@echo "Landing page tests passed"
+
+test-lint-landing:
+	cd $(WEB_LANDING) && npm run lint
+
+test-typecheck-landing:
+	cd $(WEB_LANDING) && npx tsc --noEmit
+
+prod-landing: prod-build-landing
+
+prod-build-landing:
+	cd $(WEB_LANDING) && npm run build
+
+deploy-landing: prod-build-landing
+	cd $(WEB_LANDING) && npx wrangler pages deploy out --project-name=danova-lead
+
+clean-landing:
+	rm -rf $(WEB_LANDING)/.next
+	@echo "Cleaned landing .next"

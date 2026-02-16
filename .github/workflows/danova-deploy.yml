@@ -1,0 +1,49 @@
+name: Deploy Danova
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "web/danova/**"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or PR ref to deploy (e.g. main, my-branch, refs/pull/123/head)"
+        required: false
+        default: "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web/danova/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web/danova
+        run: npm ci
+
+      - name: Build
+        working-directory: web/danova
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_API_KEY }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: web/danova
+          command: pages deploy out --project-name=danova-web
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
