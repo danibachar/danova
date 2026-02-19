@@ -24,6 +24,10 @@ jobs:
           cache: "npm"
           cache-dependency-path: web/apps/danova-lead/package-lock.json
 
+      - name: Install analytics dependencies
+        working-directory: web/modules/analytics
+        run: npm ci
+
       - name: Install dependencies
         working-directory: web/apps/danova-lead
         run: npm ci
