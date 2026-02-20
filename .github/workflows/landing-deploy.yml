@@ -1,0 +1,45 @@
+name: Deploy Landing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "web/apps/danova-lead/**"
+      - "web/modules/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # Skip cache to avoid @tailwindcss/oxide native binding issues (npm#4828)
+
+      - name: Install analytics dependencies
+        working-directory: web/modules/analytics
+        run: npm ci
+
+      - name: Install dependencies
+        working-directory: web/apps/danova-lead
+        run: npm ci
+
+      - name: Build
+        working-directory: web/apps/danova-lead
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_API_KEY }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: web/apps/danova-lead
+          command: pages deploy out --project-name=danova-lead
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
