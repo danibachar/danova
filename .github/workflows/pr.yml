@@ -187,7 +187,6 @@ jobs:
 
   deploy:
     if: github.event_name == 'workflow_dispatch'
-    needs: [integration]
     runs-on: ubuntu-latest
     permissions:
       contents: read

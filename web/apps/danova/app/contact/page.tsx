@@ -14,10 +14,25 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_ID;
+    if (!formId) {
+      setStatus("error");
+      return;
+    }
     setStatus("sending");
-    // Simulate form submission - replace with actual API/email service
-    await new Promise((r) => setTimeout(r, 1000));
-    setStatus("sent");
+    const form = e.currentTarget;
+    const body = Object.fromEntries(new FormData(form).entries());
+    try {
+      const res = await fetch(`https://formspree.io/f/${formId}`, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) setStatus("sent");
+      else setStatus("error");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
